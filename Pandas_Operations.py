@@ -55,11 +55,10 @@ def pandas_db_operations():
             shipment_mode_usability()
         elif choice2== 7:
             shipment_duration()
-        # elif choice2== 8:
-        #     db_third_most_activey_sql()
-        #     db_third_most_activey_sql_alternate()
-        # elif choice2== 9:
-        #     db_fifth_most_laziest_sql()
+        elif choice2== 8:
+            shipment_duration_10days()
+        elif choice2== 9:
+            shipment_duration_15days()
         # elif choice2== 10:
         #     db_cumulative_calories_burn_sql()
 
@@ -124,10 +123,30 @@ def shipment_mode_usability():
     df_orders= load_orders()
     print(f" Count of Different Shipping modes :  {df_orders.groupby('Ship Mode')[['Order ID']].agg(['count'])}")
 
-# "\n7. Create a New column 'Shipped Duration' which stores difference in days between Shipment and Order Date"
-def shipment_duration():
+#Calculating Shipment Duration
+def shipment_duration_calcuation():
     df_orders= load_orders()
     df_orders['Order_date_date']=  pd.to_datetime(df_orders['Order Date'], infer_datetime_format=True)
     df_orders['Ship_date_date'] =  pd.to_datetime(df_orders['Ship Date'], infer_datetime_format=True)
     df_orders['Shipping_Duration'] = df_orders['Ship_date_date'] - df_orders['Order_date_date']
-    print(f"Order id with Shipping Duration :\n {df_orders[['Order ID','Order_date_date','Ship_date_date','Shipping_Duration']]}")
+    return df_orders
+
+# "\n7. Create a New column 'Shipped Duration' which stores difference in days between Shipment and Order Date"
+def shipment_duration():
+    df_orders= shipment_duration_calcuation()
+    df_orders_15 = df_orders[df_orders['Shipping_Duration'] > '15 days']
+    pd.merge(df_orders_15, df_users, on='Region', how="inner")
+
+
+# "\n8. Order Ids with Shipped Duration > 10 Days"
+def shipment_duration_10days():
+    df_orders= shipment_duration_calcuation()
+    print(f"Printing list of Orders greater than 10 days :\n{df_orders[df_orders['Shipping_Duration']> '10 days']}")
+
+
+# "\n9. List of Orders returned where Shipped Duration > 15 Days and its corresponding Manager "
+def shipment_duration_15days():
+    df_orders= shipment_duration_calcuation()
+    df_users = load_users()
+    df_orders_15 = df_orders[df_orders['Shipping_Duration'] > '15 days']
+    print(f"Printing list of Orders greater than 15 days along with manager :\n{pd.merge(df_orders_15,df_users, on = 'Region', how= 'inner')}")
