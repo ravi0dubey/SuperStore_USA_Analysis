@@ -19,8 +19,6 @@
 import pandas as pd
 # pip install openpyxl
 
-
-
 def pandas_db_operations():
     pandas_oper_flag = True
     while pandas_oper_flag:
@@ -59,8 +57,8 @@ def pandas_db_operations():
             shipment_duration_10days()
         elif choice2== 9:
             shipment_duration_15days()
-        # elif choice2== 10:
-        #     db_cumulative_calories_burn_sql()
+        elif choice2== 10:
+            profitable_region()
 
         else:
             print("Return to Main Operations")
@@ -134,8 +132,7 @@ def shipment_duration_calcuation():
 # "\n7. Create a New column 'Shipped Duration' which stores difference in days between Shipment and Order Date"
 def shipment_duration():
     df_orders= shipment_duration_calcuation()
-    df_orders_15 = df_orders[df_orders['Shipping_Duration'] > '15 days']
-    pd.merge(df_orders_15, df_users, on='Region', how="inner")
+    print(f"Printing list of Orders with Shipping Duration : {df_orders}")
 
 
 # "\n8. Order Ids with Shipped Duration > 10 Days"
@@ -150,3 +147,19 @@ def shipment_duration_15days():
     df_users = load_users()
     df_orders_15 = df_orders[df_orders['Shipping_Duration'] > '15 days']
     print(f"Printing list of Orders greater than 15 days along with manager :\n{pd.merge(df_orders_15,df_users, on = 'Region', how= 'inner')}")
+
+
+# "\n10. Group By Region and which region is more profitable"
+def profitable_region():
+    df_users= load_users()
+    df_orders= shipment_duration_calcuation()
+    a = df_orders.groupby('Region')['Profit'].agg(['sum'])
+    a1 = a[a['sum'] == max(a['sum'])]
+    print(f" Print Region and which region is most profitable : \n {df_users[df_users['Region'] == a1.index[0]]}")
+
+
+# "\n11. Which Country gives more discount"
+# "\n12. List fo Unique PostCode"
+# "\n13. Which customer segment is more profitable"
+# "\n14. 10th most loss making product"
+# "\n15. Top 10 product with highest margin"
