@@ -59,7 +59,14 @@ def pandas_db_operations():
             shipment_duration_15days()
         elif choice2== 10:
             profitable_region()
-
+        elif choice2== 11:
+            profitable_region()
+        elif choice2 == 12:
+            unique_postcode()
+        elif choice2 == 13:
+            profitable_customer_segment()
+        elif choice2==14:
+            loss_making_product()
         else:
             print("Return to Main Operations")
             pandas_oper_flag = False
@@ -158,8 +165,26 @@ def profitable_region():
     print(f" Print Region and which region is most profitable : \n {df_users[df_users['Region'] == a1.index[0]]}")
 
 
-# "\n11. Which Country gives more discount"
+# "\n11. Which city gives more discount"
+def profitable_region():
+    df_orders= shipment_duration_calcuation()
+    df_orders['Discount_Amount'] = df_orders['Unit Price'] * df_orders['Discount']
+    print(f"City giving Maximum Discount : \n : {df_orders.groupby('City')['Discount_Amount'].agg(['sum']).sort_values(by=[('sum')],ascending=False).head(1)}")
+
 # "\n12. List fo Unique PostCode"
+def unique_postcode():
+    df_orders= shipment_duration_calcuation()
+    print(f" Total number of Unique Postal Code in dataset are : {df_orders['Postal Code'].nunique()}")
+    print(f"\nList of Unique Postal Codes in dataset are \n : {df_orders['Postal Code'].unique()}")
+
 # "\n13. Which customer segment is more profitable"
+def profitable_customer_segment():
+    df_orders = shipment_duration_calcuation()
+    print(f"Profitable Customer Segment is : \n : {df_orders.groupby('Customer Segment')['Profit'].agg(['sum']).sort_values(by=[('sum')],ascending=False).head(1)}")
 # "\n14. 10th most loss making product"
+def loss_making_product():
+    df_orders = shipment_duration_calcuation()
+    n = int(input("Enter which number of Loss Making Product name you want to see :"))
+    print(f"{n}th Loss Making Product : \n : {df_orders.groupby(['Product Category','Product Sub-Category','Product Container','Product Name'])['Profit'].agg(['sum']).sort_values(by=[('sum')],ascending=True)[n:].head(1)}")
+
 # "\n15. Top 10 product with highest margin"
