@@ -67,6 +67,8 @@ def pandas_db_operations():
             profitable_customer_segment()
         elif choice2==14:
             loss_making_product()
+        elif choice2 == 15:
+            highest_product_margin()
         else:
             print("Return to Main Operations")
             pandas_oper_flag = False
@@ -188,3 +190,7 @@ def loss_making_product():
     print(f"{n}th Loss Making Product : \n : {df_orders.groupby(['Product Category','Product Sub-Category','Product Container','Product Name'])['Profit'].agg(['sum']).sort_values(by=[('sum')],ascending=True)[n:].head(1)}")
 
 # "\n15. Top 10 product with highest margin"
+def highest_product_margin():
+    df_orders = shipment_duration_calcuation()
+    n = int(input("Enter which number of Highest Product margin you want to see :"))
+    print(f"{n}th Loss Making Product : \n : {df_orders.groupby(['Product Category', 'Product Sub-Category', 'Product Container', 'Product Name'])['Product Base Margin'].agg(['max']).sort_values(by=[('max')], ascending=True).head(n)}")
