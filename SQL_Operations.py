@@ -23,8 +23,12 @@ def sql_db_operations():
     sql_oper_flag = True
     while sql_oper_flag:
         choice2 = int(input(
-            "\nPandas Operataions\n1 Load and Print dataset \n2. How Many returns received and what are their ID's"
-            "\n3. Join Order and Return File and print it\n4.Print Unique Customer Lists\n5.How Many regions we are selling and Managers of corresponding region"
+            "\nSQL Operataions"
+            "\n1. Load and Print dataset "
+            "\n2. How Many returns received and what are their ID's"
+            "\n3. Join Order and Return File and print it"
+            "\n4. Print Unique Customer Lists"
+            "\n5. How Many regions we are selling and Managers of corresponding region"
             "\n6. Print different Shipment Modes and their Percentage Usability of all Shipments"
             "\n7. Create a New column 'Shipped Duration' which stores difference in days between Shipment and Order Date"
             "\n8. Order Ids with Shipped Duration > 10 Days"
@@ -35,11 +39,11 @@ def sql_db_operations():
             "\n13. Which customer segment is more profitable"
             "\n14. 10th most loss making product"
             "\n15. Top 10 product with highest margin"
-            "\n. Enter Your Choice :"))
+            "\nEnter Your Choice :"))
         if choice2 == 1:
-            db_date_time()
+            db_print_dataset()
         elif choice2 == 2:
-            db_print_unique_id_sql()
+            returns_show()
         elif choice2 == 3:
             db_active_id_sql()
         elif choice2 == 4:
@@ -61,3 +65,66 @@ def sql_db_operations():
         else:
             print("Return to Main Operations")
             sql_oper_flag = False
+
+def db_connect():
+    mydb1 = connection.connect(host="localhost", database="projectdb", user="devuser", passwd="Logitech1234#",use_pure=True)
+    return(mydb1)
+
+def db_print_dataset():
+    try:
+        mydb1 = db_connect()
+        cursor1 = mydb1.cursor()
+
+        print("Show SuperStore Orders records")
+        orders_query = "select * from superstore_usa_orders; "
+        cursor1.execute(orders_query)
+        print(f"SuperStore_Orders data reading using cursor\n {cursor1.fetchall()}")
+
+        print("Show SuperStore Returns records")
+        returns_query = "select * from superstore_usa_returns; "
+        cursor1.execute(returns_query)
+        print(f"SuperStore_Orders data reading using cursor\n {cursor1.fetchall()}")
+
+        print("Show SuperStore Regions records")
+        returns_query = "select * from superstore_usa_regions; "
+        cursor1.execute(returns_query)
+        print(f"SuperStore_Regions data reading using cursor\n {cursor1.fetchall()}")
+
+
+        # print(f"\nSuperStore_Orders data reading using read_sql\n")
+        # print(pd.read_sql(orders_query, mydb1))
+    except Exception as e:
+            mydb1.close()
+            print(f"Error in Reading Data: {e}")
+
+# "\n2. How Many returns received and what are their ID's"
+def returns_show():
+    try:
+        mydb1 = db_connect()
+        cursor1 = mydb1.cursor()
+        print("Show Returns Orders records")
+        returns_count_query = "select count(*) from superstore_usa_returns; "
+        cursor1.execute(returns_count_query)
+        print(f"Total no of Returns \n {cursor1.fetchall()}")
+
+        returns_query = "select OrderID from superstore_usa_returns; "
+        cursor1.execute(returns_query)
+        print(f"Order ID which were returned \n {cursor1.fetchall()}")
+
+    except Exception as e:
+            mydb1.close()
+            print(f"Error in Reading Data: {e}")
+
+def db_date_time():
+    try:
+        mydb1 = db_connect()
+        cursor1 = mydb1.cursor()
+        print("Show Database records with converted Date and Time")
+        read_date_query = "select Order_Date, STR_TO_DATE(Order_Date, '%m/%d/%YY') as new_Order_Date,  Ship_Date, STR_TO_DATE(Ship_Date, '%m/%d/%YY') as new_Ship_Date from superstore_usa_orders; "
+        cursor1.execute(read_date_query)
+        print(f"SuperStore_Orders data reading using cursor\n {cursor1.fetchall()}")
+        print(f"\nSuperStore_Orders data reading using read_sql\n")
+        print(pd.read_sql(read_date_query, mydb1))
+    except Exception as e:
+            mydb1.close()
+            print(f"Error in Converting Date Time format : {e}")
