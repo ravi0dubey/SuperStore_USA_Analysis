@@ -45,13 +45,13 @@ def sql_db_operations():
         elif choice2 == 2:
             returns_show()
         elif choice2 == 3:
-            db_active_id_sql()
+            join_order_return()
         elif choice2 == 4:
-            db_activity_not_logged_sql()
+            unique_customer_list()
         elif choice2 == 5:
-            db_laziest_sql()
+            region_manager_list()
         elif choice2 == 6:
-            db_fit_accordingto_calories_burn_sql()
+            shipment_list()
         elif choice2 == 7:
             db_not_active_regularly_sql()
         elif choice2 == 8:
@@ -115,7 +115,66 @@ def returns_show():
             mydb1.close()
             print(f"Error in Reading Data: {e}")
 
-def db_date_time():
+
+# "\n3. Join Order and Return File and print it"
+def join_order_return():
+    try:
+        mydb1 = db_connect()
+        cursor1 = mydb1.cursor()
+        print("Join of Orders and Return records")
+        returns_count_query = "select * from superstore_usa_orders so join superstore_usa_returns sr on so.Order_ID = sr.Order_ID; "
+        cursor1.execute(returns_count_query)
+        print(f"Join of ORders and Returns \n {cursor1.fetchall()}")
+    except Exception as e:
+            mydb1.close()
+            print(f"Error in Join Data: {e}")
+
+# "\n4. Print Unique Customer Lists"
+def unique_customer_list():
+    try:
+        mydb1 = db_connect()
+        cursor1 = mydb1.cursor()
+        unique_customer_query = "select count(distinct(Customer_Name)) from superstore_usa_orders ; "
+        cursor1.execute(unique_customer_query)
+        print(f"Total count of Unique Customer  :  {cursor1.fetchall()}")
+
+        unique_customer_list_query = "select distinct(Customer_Name) from superstore_usa_orders ; "
+        cursor1.execute(unique_customer_list_query)
+        print(f"Unique Customer List :  {cursor1.fetchall()}")
+    except Exception as e:
+            mydb1.close()
+            print(f"Error in Join Data: {e}")
+
+
+# "\n5. How Many regions we are selling and Managers of corresponding region"
+def region_manager_list():
+    try:
+        mydb1 = db_connect()
+        cursor1 = mydb1.cursor()
+        returns_count_query = "select so.Region, sr.Manager from superstore_usa_orders so join superstore_usa_returns sr on so.Region = sr.Region; "
+        cursor1.execute(returns_count_query)
+        print(f"Join of Orders and Region records \n {cursor1.fetchall()}")
+    except Exception as e:
+            mydb1.close()
+            print(f"Error in Orders and Returns: {e}")
+
+# "\n6. Print different Shipment Modes and their Percentage Usability of all Shipments"
+def shipment_list():
+    try:
+        mydb1 = db_connect()
+        cursor1 = mydb1.cursor()
+        shipment_count_query = "SELECT Ship_Mode, count(Ship_Mode) as count_ship_mode,round(((count(Order_Id) * 100) / temp.total_count),2) AS Percentage_count" \
+                               " FROM superstore_usa_orders JOIN (SELECT count(Order_Id) AS total_count FROM superstore_usa_orders) temp group by Ship_Mode; "
+        cursor1.execute(shipment_count_query)
+        print(f"Shipment Modes and Percentage Usability \n {cursor1.fetchall()}")
+    except Exception as e:
+            mydb1.close()
+            print(f"Error in Shipment Modes and Percentage Usability: {e}")
+
+
+
+# "\n7. Create a New column 'Shipped Duration' which stores difference in days between Shipment and Order Date"
+def shipped_order_date():
     try:
         mydb1 = db_connect()
         cursor1 = mydb1.cursor()
