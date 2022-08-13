@@ -134,7 +134,11 @@ def regions_manager():
 # "\n6. Print different Shipment Modes and their Percentage Usability of all Shipments"
 def shipment_mode_usability():
     df_orders= load_orders()
-    print(f" Count of Different Shipping modes :  {df_orders.groupby('Ship Mode')[['Order ID']].agg(['count'])}")
+    # print(f" Count of Different Shipping modes :  {df_orders.groupby('Ship Mode')[['Order ID']].agg(['count'])}")
+    ship_mode = df_orders.groupby('Ship Mode')['Order ID'].count()
+    ship_mode_df = ship_mode.to_frame().reset_index()
+    ship_mode_df['Percent_shipmode'] = round(ship_mode_df['Order ID'] / ship_mode_df['Order ID'].sum() * 100, 2)
+    print(f" Count of Different Shipping modes\n :  {ship_mode_df}")
 
 #Calculating Shipment Duration
 def shipment_duration_calcuation():
