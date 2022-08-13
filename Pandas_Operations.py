@@ -105,11 +105,17 @@ def order_return_join():
     df_returns = load_returns()
     print("Show status of Order\n")
     df1= pd.merge(df_orders, df_returns, on='Order ID', how="left")
+    df2= df_orders.join(df_returns, lsuffix="_Order", rsuffix='_return')
     print(df1)
     print("Show details of al Orders which were not returned\n")
     print(df1[df1['Status']!= 'Returned'])
     print("Show details of al Orders which were returned\n")
     print(df1[df1['Status']== 'Returned'])
+
+    print("Show details Join\n")
+    df2= df_orders.join(df_returns, lsuffix="_Order", rsuffix='_return')  #it will join the two files and will give name of all columns of Order table with _Order and
+    print(df2['Order ID_Order'])
+
 
 
 def unique_customer_list():
